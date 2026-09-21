@@ -1,0 +1,14 @@
+PROTOCOL_MAP = {
+    1: "ICMP",
+    6: "TCP",
+    17: "UDP",
+    53: "DNS",
+    80: "HTTP",
+    443: "HTTPS"
+}
+
+COLOR_CRITICAL = "#FF4B4B"
+COLOR_HIGH = "#FF9F43"
+COLOR_MEDIUM = "#F1C40F"
+COLOR_LOW = "#3498DB"
+COLOR_NORMAL = "#2ECC71"

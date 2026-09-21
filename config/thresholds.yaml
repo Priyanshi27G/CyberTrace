@@ -1,0 +1,25 @@
+dos:
+  icmp_flood:
+    max_packets: 50
+    window_seconds: 10
+    severity: "critical"
+  syn_flood:
+    max_packets: 100
+    window_seconds: 10
+    severity: "critical"
+
+port_scan:
+  min_ports: 10
+  window_seconds: 30
+  severity: "high"
+
+dns_anomaly:
+  entropy_threshold: 3.5
+  max_query_length: 253
+  severity: "high"
+
+ml_anomaly:
+  contamination: 0.05
+  n_estimators: 100
+  min_samples: 500
+  severity: "medium"
