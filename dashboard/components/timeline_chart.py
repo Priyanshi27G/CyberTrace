@@ -13,7 +13,7 @@ def render_timeline_chart(packets_data: List[Dict[str, Any]]):
     
     # Convert timestamp to datetime and bin by second
     df['datetime'] = pd.to_datetime(df['timestamp'], unit='s')
-    df['second'] = df['datetime'].dt.floor('S')
+    df['second'] = df['datetime'].dt.floor('s')
     
     # Count packets per second
     timeline_df = df.groupby('second').size().reset_index(name='Packets')
