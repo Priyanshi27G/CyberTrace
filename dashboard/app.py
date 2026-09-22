@@ -20,7 +20,42 @@ def load_css():
         with open(css_path) as f:
             st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
+def apply_theme():
+    theme = st.session_state.get('theme', 'dark')
+    st.markdown(f"""
+    <script>
+        document.documentElement.setAttribute('data-theme', '{theme}');
+    </script>
+    <style>
+        :root {{ --current-theme: {theme}; }}
+        {'[data-theme="light"] *' if theme == 'light' else ''}
+    </style>
+    """, unsafe_allow_html=True)
+    
+    # Inject theme class via a hidden div trick since Streamlit doesn't let us set <html> attrs easily
+    if theme == 'light':
+        st.markdown("""<style>
+        :root {
+            --bg-primary: #F8FAFC !important;
+            --bg-secondary: #F1F5F9 !important;
+            --bg-card: #FFFFFF !important;
+            --border-color: #E2E8F0 !important;
+            --border-hover: #CBD5E1 !important;
+            --text-primary: #1E293B !important;
+            --text-secondary: #64748B !important;
+            --text-muted: #94A3B8 !important;
+            --shadow: rgba(0,0,0,0.08) !important;
+        }
+        .stApp { background-color: #F8FAFC !important; }
+        section[data-testid="stSidebar"] { background-color: #F1F5F9 !important; }
+        h1, h2, h3 { color: #1E293B !important; }
+        p, span, div, label { color: #1E293B; }
+        .stMarkdown { color: #1E293B; }
+        </style>""", unsafe_allow_html=True)
+
 def initialize_session_state():
+    if 'theme' not in st.session_state:
+        st.session_state.theme = 'dark'
     if 'current_page' not in st.session_state:
         st.session_state.current_page = 'Live Monitor'
     if 'capture_engine' not in st.session_state:
@@ -44,11 +79,7 @@ def initialize_session_state():
             MLAnomalyDetector()
         ]
 
-def main():
-    load_css()
-    initialize_session_state()
-    
-    # Process any pending packets and run detectors
+def process_live_packets():
     if st.session_state.capture_engine.is_active():
         packets = st.session_state.capture_engine.get_packets(count=100)
         st.session_state.db.store_packets(packets)
@@ -59,7 +90,32 @@ def main():
                 if alert:
                     st.session_state.alert_manager.process_alert(alert)
 
-    # Sidebar Navigation
+def render_header():
+    is_active = st.session_state.capture_engine.is_active()
+    badge_class = "ct-badge-active" if is_active else "ct-badge-inactive"
+    badge_text = "● Live" if is_active else "● Idle"
+    
+    st.markdown(f"""
+    <div class="ct-header-bar">
+        <div style="display:flex; align-items:center; gap:12px;">
+            <span style="font-size:1.3rem;">🔍</span>
+            <span style="font-weight:700; font-size:1.1rem;">CyberTrace</span>
+            <span class="ct-status-badge {badge_class}">{badge_text}</span>
+        </div>
+        <div style="font-size:0.8rem; color:var(--text-muted);">v2.0.0</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+def main():
+    load_css()
+    initialize_session_state()
+    apply_theme()
+    process_live_packets()
+    
+    # Custom header
+    render_header()
+    
+    # Sidebar navigation
     selected_page = render_sidebar()
     
     # Route to page
