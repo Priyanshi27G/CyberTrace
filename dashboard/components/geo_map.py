@@ -43,7 +43,7 @@ def render_geo_map(packets_data: List[Dict[str, Any]]):
         
     df = pd.DataFrame(map_data)
     
-    fig = px.scatter_mapbox(
+    fig = px.scatter_map(
         df, 
         lat="lat", 
         lon="lon", 
@@ -52,7 +52,7 @@ def render_geo_map(packets_data: List[Dict[str, Any]]):
         color_discrete_sequence=["#4FC3F7"],
         zoom=1,
         size="Packets",
-        mapbox_style="carto-darkmatter"
+        map_style="carto-darkmatter"
     )
     
     fig.update_layout(
