@@ -20,7 +20,6 @@ def render_packet_table(packets_data: List[Dict[str, Any]]):
     
     st.dataframe(
         display_df,
-        use_container_width=True,
         hide_index=True,
         height=400
     )
