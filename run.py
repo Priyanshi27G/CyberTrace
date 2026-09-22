@@ -8,7 +8,7 @@ def main():
     app_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "dashboard", "app.py")
     
     try:
-        subprocess.run(["streamlit", "run", app_path], check=True)
+        subprocess.run([sys.executable, "-m", "streamlit", "run", app_path], check=True)
     except KeyboardInterrupt:
         print("\nShutting down CyberTrace...")
     except Exception as e:

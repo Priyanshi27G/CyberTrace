@@ -4,7 +4,7 @@ from dashboard.components.protocol_chart import render_protocol_chart
 from dashboard.components.packet_table import render_packet_table
 from dashboard.components.alert_panel import render_alert_panel
 from src.config.config_loader import ConfigLoader
-from st_autorefresh import st_autorefresh
+from streamlit_autorefresh import st_autorefresh
 
 def render_live_monitor():
     st.header("Live Network Monitor")

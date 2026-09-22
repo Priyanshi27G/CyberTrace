@@ -6,3 +6,4 @@ scikit-learn>=1.5.0
 requests>=2.32.0
 pyyaml>=6.0
 numpy>=1.26.0
+streamlit-autorefresh>=1.0.0
