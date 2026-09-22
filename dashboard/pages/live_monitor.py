@@ -29,7 +29,10 @@ def render_live_monitor():
                 st.rerun()
                 
     with col2:
-        st.text_input("Interface", value=config.get("capture.default_interface", "eth0"), key="iface_input")
+        default_iface = getattr(st.session_state.capture_engine, 'interface', "eth0")
+        if hasattr(default_iface, 'name'):
+            default_iface = default_iface.name
+        st.text_input("Interface", value=default_iface, key="iface_input")
     with col3:
         st.text_input("BPF Filter (e.g. 'tcp port 80')", value="", key="bpf_input")
         

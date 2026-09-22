@@ -43,3 +43,9 @@
 h1, h2, h3 {
     color: #E0E0E0 !important;
 }
+
+/* Hide Streamlit Top Bar & Deploy Button */
+#MainMenu {visibility: hidden;}
+header {visibility: hidden;}
+footer {visibility: hidden;}
+
