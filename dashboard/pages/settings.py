@@ -52,9 +52,7 @@ def render_settings():
     st.divider()
     st.markdown("### About CyberTrace")
     st.markdown("""
-    **Version:** 1.0.0  
-    **Author:** Priyanshi Gupta  
-    **Co-Author:** Avi Mishra  
+    **Version:** 1.0.3  
     
-    Built with ❤️ using Python, Streamlit, and Scapy for network traffic analysis and threat detection.
+    A network traffic analysis and threat detection tool.
     """)
