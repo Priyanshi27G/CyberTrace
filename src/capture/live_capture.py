@@ -16,6 +16,8 @@ class LiveCapture(IDataSource):
     def __init__(self):
         config = ConfigLoader()
         self.interface = config.get("capture.default_interface", conf.iface)
+        if str(self.interface).lower() == "auto":
+            self.interface = conf.iface
         self.bpf_filter = config.get("capture.bpf_filter", "")
         self.max_buffer = config.get("capture.max_buffer", 5000)
         

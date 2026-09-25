@@ -11,16 +11,15 @@ class BaseDetector(IDetector):
         self.window_seconds = window_seconds
         # Structure: {source_ip: [timestamp1, timestamp2, ...]}
         self._history: Dict[str, List[float]] = {}
-        self._last_cleanup = time.time()
+        self._last_cleanup = 0.0
         
-    def _cleanup_old_entries(self):
-        now = time.time()
+    def _cleanup_old_entries(self, current_time: float):
         # Only cleanup every 5 seconds to avoid overhead
-        if now - self._last_cleanup < 5.0:
+        if current_time - self._last_cleanup < 5.0 and self._last_cleanup != 0.0:
             return
             
-        self._last_cleanup = now
-        cutoff = now - self.window_seconds
+        self._last_cleanup = current_time
+        cutoff = current_time - self.window_seconds
         
         empty_ips = []
         for ip, timestamps in self._history.items():
@@ -36,7 +35,7 @@ class BaseDetector(IDetector):
         if ip not in self._history:
             self._history[ip] = []
         self._history[ip].append(timestamp)
-        self._cleanup_old_entries()
+        self._cleanup_old_entries(timestamp)
         
     def _count_in_window(self, ip: str) -> int:
         return len(self._history.get(ip, []))

@@ -1,6 +1,6 @@
 # CyberTrace 🔍
 
-A real-time network traffic analysis and threat detection system built with Python, Scapy, and Streamlit. Designed for educational purposes, it visualizes network packets and uses rule-based + ML techniques to identify potential cyber threats.
+A real-time network traffic analysis and threat detection system built with Python (FastAPI), Scapy, and a modern React (Vite) frontend. Designed for educational purposes, it visualizes network packets and uses rule-based + ML techniques to identify potential cyber threats.
 
 ## Features
 - **Live Packet Capture:** Sniff network traffic directly from interfaces.
@@ -10,10 +10,11 @@ A real-time network traffic analysis and threat detection system built with Pyth
   - Port Scan Detection
   - DNS Anomaly (DGA) Detection via Shannon Entropy
   - ML-based Volumetric Anomaly Detection (Isolation Forest)
-- **Interactive Dashboard:** Live metrics, protocol distribution, and GeoIP mapping of source IPs.
+- **Modern Dashboard:** Built with React, TailwindCSS, and DaisyUI for a premium dark/light mode experience.
 
 ## Requirements
 - Python 3.9+
+- Node.js & npm (for the frontend)
 - Root/Admin privileges (for live packet sniffing)
 
 ## Installation
@@ -24,22 +25,35 @@ A real-time network traffic analysis and threat detection system built with Pyth
    cd CyberTrace
    ```
 
-2. Install dependencies:
+2. Install Backend dependencies:
    ```bash
    pip install -r requirements.txt
    ```
 
+3. Install Frontend dependencies:
+   ```bash
+   cd frontend
+   npm install
+   ```
+
 ## Usage
 
-Start the interactive Streamlit dashboard:
+Start the backend API server:
 ```bash
-sudo python3 run.py
+sudo uvicorn api.main:app --host 0.0.0.0 --port 8000
 ```
-*(Note: `sudo` is required to capture live network interfaces. If you only want to use PCAP forensics, you can run it without sudo).*
+*(Note: `sudo` is required to capture live network interfaces).*
+
+Start the frontend development server:
+```bash
+cd frontend
+npm run dev
+```
 
 ## Project Structure
+- `api/`: FastAPI server and endpoints.
 - `src/`: Core backend logic (Capture engine, parsers, AI models, SQLite storage)
-- `dashboard/`: Streamlit frontend (Pages, components, styling)
+- `frontend/`: React + Vite frontend application.
 - `config/`: YAML configuration and thresholds
 - `tests/`: Unit testing suite
 

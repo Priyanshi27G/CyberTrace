@@ -6,3 +6,6 @@ data/*.db
 *.pcap
 .DS_Store
 .streamlit/credentials.toml
+node_modules/
+frontend/node_modules/
+venv/

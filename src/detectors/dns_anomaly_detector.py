@@ -37,7 +37,7 @@ class DNSAnomalyDetector(BaseDetector):
         if not domain or domain == "<malformed>":
             return None
             
-        now = time.time()
+        now = packet.timestamp
         
         # Check length anomaly
         if len(domain) > self.max_length:

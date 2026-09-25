@@ -24,16 +24,15 @@ class DoSDetector(BaseDetector):
         self._icmp_history: Dict[str, List[float]] = {}
         self._syn_history: Dict[str, List[float]] = {}
         
-    def _cleanup_specific(self, history: Dict[str, List[float]], window: float):
-        now = time.time()
-        cutoff = now - window
+    def _cleanup_specific(self, history: Dict[str, List[float]], window: float, current_time: float):
+        cutoff = current_time - window
         for ip in list(history.keys()):
             history[ip] = [ts for ts in history[ip] if ts >= cutoff]
             if not history[ip]:
                 del history[ip]
                 
     def detect(self, packet: PacketData) -> Optional[Alert]:
-        now = time.time()
+        now = packet.timestamp
         
         # ICMP Flood Check
         if packet.protocol == "ICMP":
@@ -41,7 +40,7 @@ class DoSDetector(BaseDetector):
             if ip not in self._icmp_history:
                 self._icmp_history[ip] = []
             self._icmp_history[ip].append(packet.timestamp)
-            self._cleanup_specific(self._icmp_history, self.icmp_window)
+            self._cleanup_specific(self._icmp_history, self.icmp_window, now)
             
             if len(self._icmp_history[ip]) > self.icmp_max:
                 return Alert(
@@ -58,7 +57,7 @@ class DoSDetector(BaseDetector):
             if ip not in self._syn_history:
                 self._syn_history[ip] = []
             self._syn_history[ip].append(packet.timestamp)
-            self._cleanup_specific(self._syn_history, self.syn_window)
+            self._cleanup_specific(self._syn_history, self.syn_window, now)
             
             if len(self._syn_history[ip]) > self.syn_max:
                 return Alert(

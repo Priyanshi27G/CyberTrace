@@ -24,7 +24,7 @@ class PortScanDetector(BaseDetector):
         if not packet.dst_port:
             return None
             
-        now = time.time()
+        now = packet.timestamp
         ip = packet.src_ip
         
         if ip not in self._port_history:
