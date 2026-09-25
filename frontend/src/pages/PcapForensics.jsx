@@ -70,7 +70,12 @@ export default function PcapForensics() {
                       </div>
                     </td>
                     <td>
-                      <button className="btn btn-sm btn-outline">Report</button>
+                      <button 
+                        className="btn btn-sm btn-outline"
+                        onClick={() => alert("Opening detailed forensic report for suspicious_traffic_01.pcap...")}
+                      >
+                        Report
+                      </button>
                     </td>
                   </tr>
                   <tr className="hover border-base-content/10 transition-colors">

@@ -14,7 +14,10 @@ export default function Dashboard() {
             <h2 className="text-3xl font-bold text-base-content">Overview</h2>
             <p className="text-base-content/60 mt-1">Real-time network security monitoring.</p>
           </div>
-          <button className="btn btn-primary shadow-lg shadow-primary/30">
+          <button 
+            className="btn btn-primary shadow-lg shadow-primary/30"
+            onClick={() => alert("Report generation started! The PDF will download shortly.")}
+          >
             Generate Report
           </button>
         </div>

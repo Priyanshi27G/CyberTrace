@@ -45,7 +45,14 @@ function App() {
             <Shield className="w-5 h-5" />
             Threats
           </NavLink>
-          <a href="#" className="flex items-center gap-3 px-4 py-3 text-base-content/70 hover:bg-base-200 rounded-xl font-medium transition-colors">
+          <a 
+            href="#" 
+            className="flex items-center gap-3 px-4 py-3 text-base-content/70 hover:bg-base-200 rounded-xl font-medium transition-colors"
+            onClick={(e) => {
+              e.preventDefault();
+              alert("Users management module is currently under construction. Please check back later.");
+            }}
+          >
             <Users className="w-5 h-5" />
             Users
           </a>
