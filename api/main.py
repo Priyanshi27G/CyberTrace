@@ -1,14 +1,17 @@
-from fastapi import FastAPI, BackgroundTasks, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, BackgroundTasks, WebSocket, WebSocketDisconnect, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import asyncio
 import os
 import sys
+import tempfile
+import shutil
 
 # Add project root to path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from src.capture.live_capture import LiveCapture
+from src.capture.pcap_reader import PCAPReader
 from src.storage.database import Database
 from src.alerts.alert_manager import AlertManager
 from src.detectors.dos_detector import DoSDetector
@@ -114,3 +117,58 @@ async def websocket_endpoint(websocket: WebSocket):
             await websocket.send_text(f"Message text was: {data}")
     except WebSocketDisconnect:
         active_websockets.remove(websocket)
+
+@app.post("/api/upload_pcap")
+async def upload_pcap(file: UploadFile = File(...)):
+    if not file.filename.endswith('.pcap'):
+        return {"status": "error", "message": "Invalid file type. Please upload a .pcap file"}
+        
+    # Save uploaded file temporarily
+    temp_dir = tempfile.gettempdir()
+    file_path = os.path.join(temp_dir, file.filename)
+    
+    with open(file_path, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+        
+    try:
+        pcap_reader = PCAPReader(file_path)
+        pcap_reader.start()
+        
+        # Read all packets for forensics
+        packets = []
+        while pcap_reader.is_active():
+            batch = pcap_reader.get_packets(count=500)
+            if not batch:
+                break
+            packets.extend(batch)
+            
+        pcap_reader.stop()
+        
+        # Process through detectors
+        alerts_found = []
+        for pkt in packets:
+            for detector in detectors:
+                alert = detector.detect(pkt)
+                if alert:
+                    alerts_found.append({
+                        "id": alert.id,
+                        "timestamp": alert.timestamp,
+                        "severity": alert.severity.value,
+                        "title": alert.title,
+                        "description": alert.description
+                    })
+                    alert_manager.process_alert(alert)
+                    
+        return {
+            "status": "success", 
+            "message": f"Processed {len(packets)} packets.",
+            "packets_analyzed": len(packets),
+            "alerts_generated": len(alerts_found),
+            "alerts": alerts_found
+        }
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+    finally:
+        # Cleanup
+        if os.path.exists(file_path):
+            os.remove(file_path)

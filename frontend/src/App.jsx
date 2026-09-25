@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Activity, Shield, Users, Network, Moon, Sun, Search, Bell, Menu } from 'lucide-react';
-import MetricCard from './components/MetricCard';
-import AlertPanel from './components/AlertPanel';
-import TopTalkersChart from './components/TopTalkersChart';
-
+import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom';
+import { Activity, Shield, Users, Network, Moon, Sun, Search, Bell, Menu, FileSearch } from 'lucide-react';
+import Dashboard from './pages/Dashboard';
+import NetworkTraffic from './pages/NetworkTraffic';
+import PcapForensics from './pages/PcapForensics';
+import Threats from './pages/Threats';
 function App() {
   const [theme, setTheme] = useState('corporate');
 
@@ -16,6 +17,7 @@ function App() {
   };
 
   return (
+    <BrowserRouter>
     <div className="min-h-screen bg-base-200 flex flex-col md:flex-row transition-colors duration-300">
       {/* Sidebar */}
       <aside className="w-full md:w-64 bg-base-100 border-r border-base-content/10 hidden md:flex flex-col">
@@ -27,18 +29,22 @@ function App() {
         </div>
         
         <nav className="flex-1 px-4 py-6 space-y-2">
-          <a href="#" className="flex items-center gap-3 px-4 py-3 bg-primary/10 text-primary rounded-xl font-medium transition-colors">
+          <NavLink to="/" className={({isActive}) => `flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-colors ${isActive ? 'bg-primary/10 text-primary' : 'text-base-content/70 hover:bg-base-200'}`}>
             <Activity className="w-5 h-5" />
             Dashboard
-          </a>
-          <a href="#" className="flex items-center gap-3 px-4 py-3 text-base-content/70 hover:bg-base-200 rounded-xl font-medium transition-colors">
+          </NavLink>
+          <NavLink to="/network" className={({isActive}) => `flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-colors ${isActive ? 'bg-primary/10 text-primary' : 'text-base-content/70 hover:bg-base-200'}`}>
             <Network className="w-5 h-5" />
             Network Traffic
-          </a>
-          <a href="#" className="flex items-center gap-3 px-4 py-3 text-base-content/70 hover:bg-base-200 rounded-xl font-medium transition-colors">
+          </NavLink>
+          <NavLink to="/pcap" className={({isActive}) => `flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-colors ${isActive ? 'bg-primary/10 text-primary' : 'text-base-content/70 hover:bg-base-200'}`}>
+            <FileSearch className="w-5 h-5" />
+            PCAP Forensics
+          </NavLink>
+          <NavLink to="/threats" className={({isActive}) => `flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-colors ${isActive ? 'bg-primary/10 text-primary' : 'text-base-content/70 hover:bg-base-200'}`}>
             <Shield className="w-5 h-5" />
             Threats
-          </a>
+          </NavLink>
           <a href="#" className="flex items-center gap-3 px-4 py-3 text-base-content/70 hover:bg-base-200 rounded-xl font-medium transition-colors">
             <Users className="w-5 h-5" />
             Users
@@ -82,68 +88,16 @@ function App() {
           </div>
         </header>
 
-        {/* Dashboard Content */}
-        <div className="p-6 md:p-8 flex-1 overflow-auto">
-          <div className="max-w-7xl mx-auto space-y-8">
-            
-            <div className="flex justify-between items-end">
-              <div>
-                <h2 className="text-3xl font-bold text-base-content">Overview</h2>
-                <p className="text-base-content/60 mt-1">Real-time network security monitoring.</p>
-              </div>
-              <button className="btn btn-primary shadow-lg shadow-primary/30">
-                Generate Report
-              </button>
-            </div>
-
-            {/* Metrics Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <MetricCard 
-                title="Total Traffic" 
-                value="2.4 TB" 
-                icon={Activity} 
-                trend="up" 
-                trendValue="12%" 
-                colorClass="bg-primary text-primary"
-              />
-              <MetricCard 
-                title="Active Threats" 
-                value="14" 
-                icon={Shield} 
-                trend="down" 
-                trendValue="3%" 
-                colorClass="bg-error text-error"
-              />
-              <MetricCard 
-                title="Connected Users" 
-                value="1,284" 
-                icon={Users} 
-                trend="up" 
-                trendValue="5%" 
-                colorClass="bg-secondary text-secondary"
-              />
-              <MetricCard 
-                title="Monitored IPs" 
-                value="8,092" 
-                icon={Network} 
-                colorClass="bg-accent text-accent"
-              />
-            </div>
-
-            {/* Charts & Alerts Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <div className="lg:col-span-2 min-h-[400px]">
-                <TopTalkersChart />
-              </div>
-              <div className="min-h-[400px]">
-                <AlertPanel />
-              </div>
-            </div>
-
-          </div>
-        </div>
+        {/* Page Content */}
+        <Routes>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/network" element={<NetworkTraffic />} />
+          <Route path="/pcap" element={<PcapForensics />} />
+          <Route path="/threats" element={<Threats />} />
+        </Routes>
       </main>
     </div>
+    </BrowserRouter>
   );
 }
 
